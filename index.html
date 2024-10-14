@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callback</title>
+</head>
+<body>
+    <h1>Code d'autorisation</h1>
+    <p id="code"></p>
+
+    <script>
+        // Récupation du code depuis l'url
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+
+        // Affichage du code
+        document.getElementById('code').textContent = 'Code d\'autorisation : ' + code;
+    </script>
+</body>
+</html>
