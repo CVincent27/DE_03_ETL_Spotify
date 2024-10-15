@@ -43,11 +43,11 @@ def get_access_token(auth_code):
     if 'access_token' in token_info:
         return token_info['access_token']
     else:
-        print("Erreur lors de l'obtention du jeton d'accès")
+        print("Erreur lors de l'obtention du token")
         print(token_info)
         return None
 
-# 3. jeton d'accès pour accéder à la data utilisateur
+# 3. token pour accéder à la data utilisateur
 def get_user_data(access_token):
     user_url = "https://api.spotify.com/v1/me"
     headers = {
@@ -59,7 +59,7 @@ def get_user_data(access_token):
     
     return user_data
 
-# 4. Récupération des musiques récemment écoutées
+# 4. Récupération des musiques récemments écoutées
 def get_recent_tracks(access_token):
     tracks_url = "https://api.spotify.com/v1/me/player/recently-played"
     headers = {
@@ -72,8 +72,6 @@ def get_recent_tracks(access_token):
 
     response = requests.get(tracks_url, headers=headers, params=params)
     get_recent_tracks = response.json()
-
-    # print(json.dumps(get_recent_tracks, indent=4))
 
     if 'items' in get_recent_tracks:
         return get_recent_tracks['items']
@@ -90,11 +88,11 @@ if __name__ == '__main__':
         user_data = get_user_data(access_token)  # 3.
         print(json.dumps(user_data, indent=4)) 
 
-        recent_tracks = get_recent_tracks(access_token)
+        recent_tracks = get_recent_tracks(access_token) # 4.
         if recent_tracks:
             print("Musiques récemment écoutées :")
 
-            # Initialisation des listes
+            # Init listes
             track_names = []
             artist_names = []
             played_ats = []
@@ -104,12 +102,12 @@ if __name__ == '__main__':
                 artist_name = track['track']['artists'][0]['name']
                 played_at = track['played_at']
                 
-                # Ajout des données aux listes
+                # Ajout des data aux listes
                 track_names.append(track_name)
                 artist_names.append(artist_name)
                 played_ats.append(played_at)
             
-            # Création du DataFrame à partir des listes
+            # Création du df à partir des listes
             track_dict = {
                 "track": track_names,
                 "artist": artist_names,
