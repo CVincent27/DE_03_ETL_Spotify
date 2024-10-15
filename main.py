@@ -10,6 +10,33 @@ REDIRECT_URI = 'http://127.0.0.1:5500/'
 SCOPE = 'user-read-private%20user-read-email%20user-read-recently-played'
 
 
+# Vérification validité données
+def check_data(df: pd.DataFrame) -> bool:
+    # Check empty data
+    if df.empty:
+        print("Aucune data, fin du programme.")
+        return False
+    
+    # Check clé primaire (played_at)
+    if pd.Series(df['played_at']).is_unique:
+        pass
+    else:
+        raise Exception("Doublon dans la clé primaire")
+    
+    # Check valeurs null
+    if df.isnull().values.any():
+        raise Exception("Valeurs nulles trouvées")
+    
+    # Check timestamps last 24h
+    yesterday = pd.Timestamp.now() - pd.Timedelta(days=1)
+    yesterday = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    timestamps = df['timestamps'].tolist()
+    for timestamp in timestamps:
+        if pd.to_datetime(timestamp) < yesterday:
+            raise Exception("Musiques écoutées il y a plus de 24h")
+    return True
+
 # 1. Obtention code d'autorisation
 def get_authorization_code():
     auth_url = f"https://accounts.spotify.com/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SCOPE}"
@@ -56,10 +83,25 @@ def get_user_data(access_token):
     
     response = requests.get(user_url, headers=headers)
     user_data = response.json()
-    
+
+    # Extraction data utilisateur
+    if user_data:
+        display_name = user_data.get('display_name', 'N/A')
+        external_urls = user_data.get('external_urls', {}).get('spotify', 'N/A')
+        user_id = user_data.get('id', 'N/A')
+        country = user_data.get('country', 'N/A')
+        product = user_data.get('product', 'N/A')
+
+        # Affichage des informations extraites
+        print(f"Display Name: {display_name}")
+        print(f"External URL: {external_urls}")
+        print(f"User ID: {user_id}")
+        print(f"Country: {country}")
+        print(f"Product: {product}")
+
     return user_data
 
-# 4. Récupération des musiques récemments écoutées
+# 4. Récupération des musiques récemment écoutées
 def get_recent_tracks(access_token):
     tracks_url = "https://api.spotify.com/v1/me/player/recently-played"
     headers = {
@@ -86,7 +128,6 @@ if __name__ == '__main__':
     
     if access_token:
         user_data = get_user_data(access_token)  # 3.
-        print(json.dumps(user_data, indent=4)) 
 
         recent_tracks = get_recent_tracks(access_token) # 4.
         if recent_tracks:
@@ -115,8 +156,6 @@ if __name__ == '__main__':
             }
 
             track_df = pd.DataFrame(track_dict, columns=["track", "artist", "played_at"])
-            # Conversion de played_at en datetime
-            track_df['played_at'] = pd.to_datetime(track_df['played_at'])
-            # Modification du format de la date
-            track_df['played_at'] = track_df['played_at'].dt.strftime('%d/%m/%Y %H:%M:%S')
+            # add timestamps
+            track_df['timestamps'] = pd.to_datetime(track_df['played_at']).dt.strftime('%Y-%m-%d')
             print(track_df)
