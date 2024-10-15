@@ -7,7 +7,8 @@ import os
 CLIENT_ID = '5e3fcd8ba2f046d9862f645e4a620eda'
 CLIENT_SECRET = '003729ad92684faa994340f14b190f7c'
 REDIRECT_URI = 'http://127.0.0.1:5500/'
-SCOPE = 'user-read-private user-read-email'
+SCOPE = 'user-read-private%20user-read-email%20user-read-recently-played'
+
 
 # 1. Obtention code d'autorisation
 def get_authorization_code():
@@ -58,6 +59,29 @@ def get_user_data(access_token):
     
     return user_data
 
+# 4. Récupération des musiques récemment écoutées
+def get_recent_tracks(access_token):
+    tracks_url = "https://api.spotify.com/v1/me/player/recently-played"
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    params = {
+        'limit': 10
+    }
+
+    response = requests.get(tracks_url, headers=headers, params=params)
+    get_recent_tracks = response.json()
+
+    print(json.dumps(get_recent_tracks, indent=4))
+
+    if 'items' in get_recent_tracks:
+        return get_recent_tracks['items']
+    else:
+        print("Erreur lors de l'obtention des musiques récemment écoutées")
+        print(get_recent_tracks)
+        return None
+
 if __name__ == '__main__':
     auth_code = get_authorization_code()  # 1.
     access_token = get_access_token(auth_code)  # 2.
@@ -65,3 +89,12 @@ if __name__ == '__main__':
     if access_token:
         user_data = get_user_data(access_token)  # 3.
         print(json.dumps(user_data, indent=4)) 
+
+        recent_tracks = get_recent_tracks(access_token)
+        if recent_tracks:
+            print("Musiques récemment écoutées :")
+            for track in recent_tracks:
+                track_name = track['track']['name']
+                artist_name = track['track']['artists'][0]['name']
+                played_at = track['played_at']
+                print(f"{track_name} - {artist_name} ({played_at})")
