@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Callback</title>
+    <title>Auth Spotify</title>
 </head>
 <body>
     <p id="code"></p>
@@ -14,7 +14,7 @@
         const code = params.get('code');
 
         // Affichage du code
-        document.getElementById('code').textContent = 'Code d\'autorisation : ' + code;
+        document.getElementById('code').innerText = code;
     </script>
 </body>
 </html>
