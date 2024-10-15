@@ -3,13 +3,13 @@ import base64
 import json
 import os
 
-# Remplacez ces valeurs par vos propres informations
+# ID client
 CLIENT_ID = '5e3fcd8ba2f046d9862f645e4a620eda'
 CLIENT_SECRET = '003729ad92684faa994340f14b190f7c'
 REDIRECT_URI = 'http://127.0.0.1:5500/'
 SCOPE = 'user-read-private user-read-email'
 
-# Étape 1 : Obtenir le code d'autorisation
+# 1. Obtention code d'autorisation
 def get_authorization_code():
     auth_url = f"https://accounts.spotify.com/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SCOPE}"
     print(f"Code d'authentification : {auth_url}")
@@ -18,7 +18,7 @@ def get_authorization_code():
     auth_code = input("Entrez le code : ")
     return auth_code
 
-# Étape 2 : échanger le code contre le token
+# 2. Echange code contre token
 def get_access_token(auth_code):
     token_url = "https://accounts.spotify.com/api/token"
     
@@ -46,7 +46,7 @@ def get_access_token(auth_code):
         print(token_info)
         return None
 
-# Étape 3 : jeton d'accès pour accéder à la data utilisateur
+# 3. jeton d'accès pour accéder à la data utilisateur
 def get_user_data(access_token):
     user_url = "https://api.spotify.com/v1/me"
     headers = {
@@ -59,9 +59,9 @@ def get_user_data(access_token):
     return user_data
 
 if __name__ == '__main__':
-    auth_code = get_authorization_code()  # Étape 1
-    access_token = get_access_token(auth_code)  # Étape 2
+    auth_code = get_authorization_code()  # 1.
+    access_token = get_access_token(auth_code)  # 2.
     
     if access_token:
-        user_data = get_user_data(access_token)  # Étape 3
-        print(json.dumps(user_data, indent=4))  # Affiche les données utilisateur
+        user_data = get_user_data(access_token)  # 3.
+        print(json.dumps(user_data, indent=4)) 
