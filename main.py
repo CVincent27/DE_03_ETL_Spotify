@@ -1,7 +1,7 @@
 import requests
 import base64
 import json
-import os
+import pandas as pd
 
 # ID client
 CLIENT_ID = '5e3fcd8ba2f046d9862f645e4a620eda'
@@ -73,7 +73,7 @@ def get_recent_tracks(access_token):
     response = requests.get(tracks_url, headers=headers, params=params)
     get_recent_tracks = response.json()
 
-    print(json.dumps(get_recent_tracks, indent=4))
+    # print(json.dumps(get_recent_tracks, indent=4))
 
     if 'items' in get_recent_tracks:
         return get_recent_tracks['items']
@@ -93,8 +93,32 @@ if __name__ == '__main__':
         recent_tracks = get_recent_tracks(access_token)
         if recent_tracks:
             print("Musiques récemment écoutées :")
+
+            # Initialisation des listes
+            track_names = []
+            artist_names = []
+            played_ats = []
+
             for track in recent_tracks:
                 track_name = track['track']['name']
                 artist_name = track['track']['artists'][0]['name']
                 played_at = track['played_at']
-                print(f"{track_name} - {artist_name} ({played_at})")
+                
+                # Ajout des données aux listes
+                track_names.append(track_name)
+                artist_names.append(artist_name)
+                played_ats.append(played_at)
+            
+            # Création du DataFrame à partir des listes
+            track_dict = {
+                "track": track_names,
+                "artist": artist_names,
+                "played_at": played_ats
+            }
+
+            track_df = pd.DataFrame(track_dict, columns=["track", "artist", "played_at"])
+            # Conversion de played_at en datetime
+            track_df['played_at'] = pd.to_datetime(track_df['played_at'])
+            # Modification du format de la date
+            track_df['played_at'] = track_df['played_at'].dt.strftime('%d/%m/%Y %H:%M:%S')
+            print(track_df)
