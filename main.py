@@ -1,3 +1,4 @@
+import sqlite3
 import requests
 import base64
 # import json
@@ -167,3 +168,26 @@ if __name__ == '__main__':
 # Load
 
 engine = sqlalchemy.create_engine(DATABASE_LOCATION)
+conn = sqlite3.connect('my_played_tracks.sqlite')
+cursor = conn.cursor()
+
+sql_query = """
+CREATE TABLE IF NOT EXISTS my_played_tracks(
+    track VARCHAR(200),
+    artist VARCHAR(200),
+    played_at VARCHAR(200),
+    timestamps VARCHAR(200),
+    CONSTRAINT primary_key_constraint PRIMARY KEY (played_at)
+)
+"""
+
+cursor.execute(sql_query)
+print("Database créée")
+
+try:
+    track_df.to_sql("my_played_tracks", engine, index=False, if_exists='append')
+except:
+    print("Data déjà existante dans la database")
+
+conn.close()
+print("Fermeture de la base effectuée")
