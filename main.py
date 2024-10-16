@@ -1,8 +1,10 @@
 import requests
 import base64
-import json
+# import json
 import pandas as pd
+import sqlalchemy
 
+DATABASE_LOCATION = "sqlite:///my_played_tracks.sqlite"
 # ID client
 CLIENT_ID = '5e3fcd8ba2f046d9862f645e4a620eda'
 CLIENT_SECRET = '003729ad92684faa994340f14b190f7c'
@@ -158,4 +160,10 @@ if __name__ == '__main__':
             track_df = pd.DataFrame(track_dict, columns=["track", "artist", "played_at"])
             # add timestamps
             track_df['timestamps'] = pd.to_datetime(track_df['played_at']).dt.strftime('%Y-%m-%d')
-            print(track_df)
+            if check_data(track_df):
+                print(track_df)
+                print("Data validée")
+        
+# Load
+
+engine = sqlalchemy.create_engine(DATABASE_LOCATION)
