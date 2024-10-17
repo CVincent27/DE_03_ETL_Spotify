@@ -30,13 +30,13 @@ def check_data(df: pd.DataFrame) -> bool:
     if df.isnull().values.any():
         raise Exception("Valeurs nulles trouvées")
     
-    # Check timestamps last 24h
-    yesterday = pd.Timestamp.now() - pd.Timedelta(days=1)
-    yesterday = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
+    # Check timestamps last month
+    last_month = pd.Timestamp.now() - pd.Timedelta(days=30) #30 jours
+    last_month = last_month.replace(hour=0, minute=0, second=0, microsecond=0)
 
     timestamps = df['timestamps'].tolist()
     for timestamp in timestamps:
-        if pd.to_datetime(timestamp) < yesterday:
+        if pd.to_datetime(timestamp) < last_month:
             raise Exception("Musiques écoutées il y a plus de 24h")
     return True
 
