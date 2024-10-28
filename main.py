@@ -7,8 +7,8 @@ import sqlalchemy
 
 DATABASE_LOCATION = "sqlite:///my_played_tracks.sqlite"
 # ID client
-CLIENT_ID = '5e3fcd8ba2f046d9862f645e4a620eda'
-CLIENT_SECRET = '003729ad92684faa994340f14b190f7c'
+CLIENT_ID = '02da1b0fd5474dc08cb4266d9dd13ae7'
+CLIENT_SECRET = '5675b5ae4f664c339f81df5e7eca79b9'
 REDIRECT_URI = 'http://127.0.0.1:5500/'
 SCOPE = 'user-read-private%20user-read-email%20user-read-recently-played'
 
@@ -83,9 +83,17 @@ def get_user_data(access_token):
     headers = {
         'Authorization': f'Bearer {access_token}'
     }
-    
+
     response = requests.get(user_url, headers=headers)
-    user_data = response.json()
+
+    if response.status_code == 200:
+        user_data = response.json()
+    else:
+        print("Erreur:", response.status_code)
+        print(response.text)
+        return None
+
+    # user_data = response.json()
 
     # Extraction data utilisateur
     if user_data:
@@ -116,14 +124,15 @@ def get_recent_tracks(access_token):
     }
 
     response = requests.get(tracks_url, headers=headers, params=params)
-    get_recent_tracks = response.json()
 
-    if 'items' in get_recent_tracks:
-        return get_recent_tracks['items']
+    # Vérifier le statut HTTP
+    if response.status_code == 200:
+        get_recent_tracks = response.json()
+        return get_recent_tracks['items'] if 'items' in get_recent_tracks else None
     else:
-        print("Erreur lors de l'obtention des musiques récemment écoutées")
-        print(get_recent_tracks)
+        print(f"Erreur {response.status_code}: {response.text}")
         return None
+
 
 if __name__ == '__main__':
     auth_code = get_authorization_code()  # 1.
