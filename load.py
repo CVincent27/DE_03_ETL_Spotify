@@ -5,7 +5,7 @@ DATABASE_LOCATION = "sqlite:///my_played_tracks.sqlite"
 
 def create_database():
     """
-    Crée la table dans la base de données si elle n'existe pas déjà.
+    Crée la table dans la base de données 
     """
     conn = sqlite3.connect('my_played_tracks.sqlite')
     cursor = conn.cursor()
@@ -25,13 +25,13 @@ def create_database():
 
 def load_data_to_db(track_df):
     """
-    Charge les données dans la base de données SQLite.
+    Charge les données dans la DB
     """
     conn = sqlite3.connect('my_played_tracks.sqlite')
     cursor = conn.cursor()
 
     for _, row in track_df.iterrows():
-        # S'assurer que played_at est bien une chaîne formatée
+        # conversion played_at
         played_at = pd.to_datetime(row['played_at']).strftime('%Y-%m-%d %H:%M:%S')
         
         cursor.execute("""
