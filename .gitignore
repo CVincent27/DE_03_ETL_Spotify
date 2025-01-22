@@ -1,3 +1,7 @@
 venv/
 airflow-venv/
 airflow/
+__pycache__/transform.cpython-38.pyc
+__pycache__/extract.cpython-38.pyc
+__pycache__/load.cpython-38.pyc
+del_timestamps.sql
