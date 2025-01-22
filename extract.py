@@ -1,8 +1,12 @@
 import base64
 import requests
+from dotenv import load_dotenv
+import os
 
-CLIENT_ID = '02da1b0fd5474dc08cb4266d9dd13ae7'
-CLIENT_SECRET = '5675b5ae4f664c339f81df5e7eca79b9'
+load_dotenv()
+
+CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 REDIRECT_URI = 'http://127.0.0.1:5500/'
 SCOPE = 'user-read-private%20user-read-email%20user-read-recently-played'
 
