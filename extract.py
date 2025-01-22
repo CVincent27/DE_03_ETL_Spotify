@@ -7,18 +7,14 @@ REDIRECT_URI = 'http://127.0.0.1:5500/'
 SCOPE = 'user-read-private%20user-read-email%20user-read-recently-played'
 
 def get_authorization_code():
-    """
-    Récupère le code d'autorisation nécessaire pour obtenir le token d'accès.
-    """
+    # Récup authorization code
     auth_url = f"https://accounts.spotify.com/authorize?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&scope={SCOPE}"
     print(f"Code d'authentification : {auth_url}")
     auth_code = input("Entrez le code : ")
     return auth_code
 
 def get_access_token(auth_code):
-    """
-    Échange le code d'autorisation contre un token d'accès.
-    """
+    # échange code vs token
     token_url = "https://accounts.spotify.com/api/token"
     auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
     headers = {
@@ -39,9 +35,6 @@ def get_access_token(auth_code):
         return None
 
 def get_user_data(access_token):
-    """
-    Récupère les données de l'utilisateur Spotify.
-    """
     user_url = "https://api.spotify.com/v1/me"
     headers = {
         'Authorization': f'Bearer {access_token}'
@@ -54,9 +47,7 @@ def get_user_data(access_token):
         return None
 
 def get_recent_tracks(access_token):
-    """
-    Récupère les musiques récemment écoutées de l'utilisateur.
-    """
+    # Récup les musiques récemment écoutées
     tracks_url = "https://api.spotify.com/v1/me/player/recently-played"
     headers = {'Authorization': f'Bearer {access_token}'}
     params = {'limit': 10}
