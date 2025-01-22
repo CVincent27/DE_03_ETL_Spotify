@@ -5,3 +5,6 @@ __pycache__/transform.cpython-38.pyc
 __pycache__/extract.cpython-38.pyc
 __pycache__/load.cpython-38.pyc
 del_timestamps.sql
+.env
+my_played_tracks.sqlite
+my_played_tracks.sqlite
