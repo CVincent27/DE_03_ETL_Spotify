@@ -5,7 +5,6 @@ from load import create_database, load_data_to_db
 
 DATABASE_LOCATION = "sqlite:///my_played_tracks.sqlite"
 
-# Main Function
 if __name__ == '__main__':
     auth_code = get_authorization_code()  # 1.
     access_token = get_access_token(auth_code)  # 2.
